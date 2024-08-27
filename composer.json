@@ -1,0 +1,32 @@
+{
+    "name": "axguowen/think-ocpcclient",
+    "description": "Simple OCPC Client For ThinkPHP",
+    "keywords": [
+        "thinkphp",
+        "ocpc",
+        "client"
+    ],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "axguowen",
+            "email": "axguowen@qq.com"
+        }
+    ],
+    "require": {
+        "topthink/framework": "^6.1",
+        "axguowen/http-client": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "think\\": "src"
+        }
+    },
+    "extra": {
+        "think": {
+            "config": {
+                "ocpcclient": "src/ocpcclient/config.php"
+            }
+        }
+    }
+}
