@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "topthink/framework": "^6.1",
+        "topthink/framework": "^6.1||^8.0",
         "axguowen/http-client": "^1.0"
     },
     "autoload": {
