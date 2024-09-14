@@ -69,14 +69,16 @@ class TikTok extends Platform
 
         // 转化数据
         $data = [
-            'event' => $this->options['event_type'],
-            'event_time' => $this->options['timestamp'],
-            'event_id' => $this->options['event_id'],
-            'user' => [
-                'ttclid' => $this->options['ttclid'],
-            ],
-            'page' => [
-                'url' => $this->options['page_url'],
+            [
+                'event' => $this->options['event_type'],
+                'event_time' => $this->options['timestamp'],
+                'event_id' => $this->options['event_id'],
+                'user' => [
+                    'ttclid' => $this->options['ttclid'],
+                ],
+                'page' => [
+                    'url' => $this->options['page_url'],
+                ],
             ],
         ];
         // 请求数据
