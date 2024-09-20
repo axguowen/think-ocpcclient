@@ -44,6 +44,8 @@ class Qihu extends Platform
         'qhclickid' => '',
         // 转化类型
         'event' => '',
+        // 深度转化类型
+        'event_deep' => '',
         // 转化时间戳, 单位秒
         'event_time' => '',
     ];
@@ -104,6 +106,63 @@ class Qihu extends Platform
         // 发送请求并返回结果
         return $this->sendRequest($requestData, '/uploadWebConvert');
 	}
+
+    /**
+     * 深度转化回传
+     * @access public
+     * @return array
+     */
+	public function convertDeeply()
+	{
+        if(empty($this->options['key'])){
+            return [null, new \Exception('未指定参数key', 400)];
+        }
+        if(empty($this->options['secret'])){
+            return [null, new \Exception('未指定参数secret', 400)];
+        }
+        if(empty($this->options['data_industry'])){
+            return [null, new \Exception('未指定参数data_industry', 400)];
+        }
+        if(empty($this->options['qhclickid'])){
+            return [null, new \Exception('未指定参数qhclickid', 400)];
+        }
+        if(empty($this->options['event_deep'])){
+            return [null, new \Exception('版权资质未指定360深度转化事件类型', 400)];
+        }
+        if(empty($this->options['event_time'])){
+            return [null, new \Exception('未指定参数event_time', 400)];
+        }
+
+        $dataIndustry = $this->options['data_industry'];
+        // 转化数据
+        $dataDetail = [
+            'event' => $this->options['event_deep'],
+            'event_time' => $this->options['event_time'],
+        ];
+
+        // 如果是信息流
+        if($dataIndustry == 'ocpc_web_convert'){
+            $dataDetail['impression_id'] = $this->options['qhclickid'];
+        }
+        // 不是信息流
+        else{
+            $dataDetail['qhclickid'] = $this->options['qhclickid'];
+            $dataDetail['trans_id'] = $this->options['qhclickid'];
+            $dataDetail['jzqs'] = $this->options['jzqs'];
+        }
+    
+        // 转化数据
+        $requestData = [
+            'data' => [
+                'request_time' => time(),
+                'data_industry' => $dataIndustry,
+                'data_detail' => $dataDetail,
+            ]
+        ];
+
+        // 发送请求并返回结果
+        return $this->sendRequest($requestData, '/uploadWebConvert');
+    }
 
     /**
      * 发送请求
