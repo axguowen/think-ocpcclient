@@ -90,8 +90,19 @@ class Alipay extends Platform
             ],
         ], JSON_UNESCAPED_UNICODE));
 
-        // 如果是第三方代调用模式, 请设置app_auth_token（应用授权令牌）
-        $responseResult = $alipayClient->execute($request);
+        try{
+            // 如果是第三方代调用模式, 请设置app_auth_token（应用授权令牌）
+            $responseResult = $alipayClient->execute($request);
+        } catch (\Exception $e){
+            // 获取错误信息
+            $errorMessage = $e->getMessage();
+            // 如果是密钥错误
+            if(strpos($errorMessage, 'openssl_sign') !== false){
+                return [null, new \Exception('版权资质配置的支付宝密钥不可用, 请更换')];
+            }
+            return [null, $e];
+        }
+        
         // 构造响应字段
         $responseApiName = str_replace('.', '_', $request->getApiMethodName()) . '_response';
         // 获取响应结果
