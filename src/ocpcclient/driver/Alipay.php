@@ -45,6 +45,8 @@ class Alipay extends Platform
         'conversion_time' => '',
         // 转化回调扩展信息
         'callback_ext_info' => '',
+        // 页面链接
+        'page_url' => '',
     ];
 
 	/**
@@ -73,20 +75,32 @@ class Alipay extends Platform
         $alipayClient = new AopClient($alipayConfig);
         // 构造请求参数以调用接口
         $request = new Request();
+        // 转化数据
+        $conversionData = [
+            'source' => 'COMMON_TARGET',
+            'principal_tag' => $this->options['principal_tag'],
+            'biz_no' => $this->options['biz_no'],
+            'conversion_type' => $this->options['conversion_type'],
+            'conversion_time' => $this->options['conversion_time'],
+            'uuid_type' => 'PID',
+            'uuid' => '2088UID',
+            'callback_ext_info' => urldecode($this->options['callback_ext_info']),
+        ];
+        // 如果是425
+        if($this->options['conversion_type'] == '425'){
+            // 设置业务参数
+            $conversionData['property_list'] = [
+                [
+                    'key' => 'conversion_target_url',
+                    'value' => $this->options['page_url'],
+                ],
+            ];
+        }
         // 设置业务参数
         $request->setBizContent(json_encode([
             'biz_token' => $this->options['biz_token'],
             'conversion_data_list' => [
-                [
-                    'source' => 'COMMON_TARGET',
-                    'principal_tag' => $this->options['principal_tag'],
-                    'biz_no' => $this->options['biz_no'],
-                    'conversion_type' => $this->options['conversion_type'],
-                    'conversion_time' => $this->options['conversion_time'],
-                    'uuid_type' => 'PID',
-                    'uuid' => '2088UID',
-                    'callback_ext_info' => urldecode($this->options['callback_ext_info']),
-                ],
+                $conversionData,
             ],
         ], JSON_UNESCAPED_UNICODE));
 
