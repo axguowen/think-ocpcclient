@@ -11,9 +11,9 @@
 
 namespace think\ocpcclient\driver;
 
+use think\facade\RedisClient;
 use think\ocpcclient\Platform;
 use axguowen\HttpClient;
-use axguowen\RedisClient;
 
 /**
  * 小红书推广
@@ -139,7 +139,7 @@ class XiaoHongShu extends Platform
             'advertiser_id' => $this->options['advertiser_id']
         ]);
         // 如果缓存存在
-        if ($cacheBuilder->exist() && 5 === $cacheBuilder->type()) {
+        if ($cacheBuilder->exists() && 5 === $cacheBuilder->type()) {
             // 获取缓存数据
             $cacheData = $cacheBuilder->hGetAll();
             // 如果没有过期
