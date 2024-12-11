@@ -35,6 +35,8 @@ class Tencent extends Platform
         'domain_name' => '',
         // 转化类型
         'action_type' => '',
+        // 深度转化类型
+        'action_deep' => '',
         // 转化追踪参数
         'click_id' => '',
         // 转化时间戳, 单位秒
@@ -69,6 +71,45 @@ class Tencent extends Platform
                     'url' => $this->options['domain_name'],
                     'action_time' => $this->options['action_time'],
                     'action_type' => $this->options['action_type'],
+                    'trace' => [
+						'click_id' => $this->options['click_id'],
+					]
+                ]
+            ]
+        ];
+
+        // 发送请求并返回结果
+        return $this->sendRequest($requestData, '/conv');
+	}
+
+    /**
+     * 深度转化回传
+     * @access public
+     * @return array
+     */
+	public function convertDeeply()
+	{
+        if(empty($this->options['domain_name'])){
+            return [null, new \Exception('未指定参数domain_name', 400)];
+        }
+        if(empty($this->options['action_deep'])){
+            return [null, new \Exception('版权资质未指定广点通深度转化事件类型', 400)];
+        }
+        if(empty($this->options['click_id'])){
+            return [null, new \Exception('未指定参数click_id', 400)];
+        }
+        if(empty($this->options['action_time'])){
+            return [null, new \Exception('未指定参数action_time', 400)];
+        }
+
+        // 转化数据
+        $requestData = [
+            'actions' => [
+                [
+                    'outer_action_id' => $this->options['click_id'],
+                    'url' => $this->options['domain_name'],
+                    'action_time' => $this->options['action_time'],
+                    'action_type' => $this->options['action_deep'],
                     'trace' => [
 						'click_id' => $this->options['click_id'],
 					]
