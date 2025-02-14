@@ -152,7 +152,7 @@ class Tencent extends Platform
             // 版权资质未指定转化类型
             if(strpos($result['message'], 'unknown action') !== false){
                 // 返回失败
-                return [null, new \Exception('操作失败, 错误信息: 版权资质广点通转化类型设置错误或账户域名不正确, ' . $result['message'], 400)];
+                return [null, new \Exception('操作失败, 错误信息: 版权资质广点通转化类型设置错误或账户域名不正确, ' . $result['message'] . ', 错误代码: ' . $result['code'], 400)];
             }
             // 返回失败
             return [null, new \Exception('操作失败, 错误信息: ' . $result['message'], 400)];
