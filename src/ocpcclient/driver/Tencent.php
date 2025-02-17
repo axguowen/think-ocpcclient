@@ -213,9 +213,6 @@ class Tencent extends Platform
      */
 	protected function sendRequest($url, array $data, $headers = [])
 	{
-        // json序列化后的数据
-        $requestJson = json_encode($data);
-
         try{
             // 发送请求
             $response = HttpClient::post($url, json_encode($data, JSON_UNESCAPED_UNICODE), $headers);
