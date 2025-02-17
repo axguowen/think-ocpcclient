@@ -26,6 +26,12 @@ class Tencent extends Platform
      */
     const BASE_URL = 'https://tracking.e.qq.com';
 
+    /**
+     * 新版基础URL
+     * @const
+     */
+    const BASE_URL_NEW = 'https://api.e.qq.com/v1.3';
+
 	/**
      * 平台配置参数
      * @var array
@@ -41,6 +47,12 @@ class Tencent extends Platform
         'click_id' => '',
         // 转化时间戳, 单位秒
         'action_time' => '',
+        // 推广账户ID
+        'account_id' => '',
+        // 数据源ID
+        'user_action_set_id' => '',
+        // 鉴权参数
+        'access_token' => '',
     ];
 
 	/**
@@ -63,23 +75,58 @@ class Tencent extends Platform
             return [null, new \Exception('未指定参数action_time', 400)];
         }
 
-        // 转化数据
-        $requestData = [
+        // 请求地址
+        $requestUrl = static::BASE_URL . '/conv';
+        // 请求头
+        $headers = [
+            'Content-Type' => 'application/json',
+            'cache-control' => 'no-cache',
+        ];
+        // 请求体
+        $body = [
             'actions' => [
                 [
-                    'outer_action_id' => $this->options['click_id'],
-                    'url' => $this->options['domain_name'],
                     'action_time' => $this->options['action_time'],
                     'action_type' => $this->options['action_type'],
+                    'outer_action_id' => $this->options['click_id'],
                     'trace' => [
-						'click_id' => $this->options['click_id'],
-					]
+                        'click_id' => $this->options['click_id'],
+                    ],
+                    'url' => $this->options['domain_name'],
                 ]
             ]
         ];
-
+        // 如果设置了token
+        if(!empty($this->options['access_token'])){
+            // 请求地址
+            $requestUrl = static::BASE_URL_NEW . '/user_actions/add?' . http_build_query([
+                'access_token' => $this->options['access_token'],
+                'timestamp' => time(),
+                'nonce' => hash('md5', uniqid() . mt_rand(100000, 999999)),
+            ]);
+            // 请求头
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
+            // 请求体
+            $body = [
+                'account_id' => $this->options['account_id'],
+                'user_action_set_id' => $this->options['user_action_set_id'],
+                'actions' => [
+                    [
+                        'action_time' => $this->options['action_time'],
+                        'action_type' => $this->options['action_type'],
+                        'outer_action_id' => $this->options['click_id'],
+                        'trace' => [
+                            'click_id' => $this->options['click_id'],
+                        ],
+                        'url' => $this->options['domain_name'],
+                    ]
+                ]
+            ];
+        }
         // 发送请求并返回结果
-        return $this->sendRequest($requestData, '/conv');
+        return $this->sendRequest($requestUrl, $body, $headers);
 	}
 
     /**
@@ -102,43 +149,76 @@ class Tencent extends Platform
             return [null, new \Exception('未指定参数action_time', 400)];
         }
 
-        // 转化数据
-        $requestData = [
+        // 请求地址
+        $requestUrl = static::BASE_URL . '/conv';
+        // 请求头
+        $headers = [
+            'Content-Type' => 'application/json',
+            'cache-control' => 'no-cache',
+        ];
+        // 请求体
+        $body = [
             'actions' => [
                 [
-                    'outer_action_id' => $this->options['click_id'],
-                    'url' => $this->options['domain_name'],
                     'action_time' => $this->options['action_time'],
                     'action_type' => $this->options['action_deep'],
+                    'outer_action_id' => $this->options['click_id'],
                     'trace' => [
-						'click_id' => $this->options['click_id'],
-					]
+                        'click_id' => $this->options['click_id'],
+                    ],
+                    'url' => $this->options['domain_name'],
                 ]
             ]
         ];
-
+        // 如果设置了token
+        if(!empty($this->options['access_token'])){
+            // 请求地址
+            $requestUrl = static::BASE_URL_NEW . '/user_actions/add?' . http_build_query([
+                'access_token' => $this->options['access_token'],
+                'timestamp' => time(),
+                'nonce' => hash('md5', uniqid() . mt_rand(100000, 999999)),
+            ]);
+            // 请求头
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
+            // 请求体
+            $body = [
+                'account_id' => $this->options['account_id'],
+                'user_action_set_id' => $this->options['user_action_set_id'],
+                'actions' => [
+                    [
+                        'action_time' => $this->options['action_time'],
+                        'action_type' => $this->options['action_deep'],
+                        'outer_action_id' => $this->options['click_id'],
+                        'trace' => [
+                            'click_id' => $this->options['click_id'],
+                        ],
+                        'url' => $this->options['domain_name'],
+                    ]
+                ]
+            ];
+        }
         // 发送请求并返回结果
-        return $this->sendRequest($requestData, '/conv');
+        return $this->sendRequest($requestUrl, $body, $headers);
 	}
 
     /**
      * 发送请求
      * @access protected
-     * @param array $data 转化数据
-     * @param string $path URL
+     * @param string $url 请求地址
+     * @param array $data 请求体
+     * @param array $headers 请求头
      * @return array
      */
-	protected function sendRequest(array $data, $path = '')
+	protected function sendRequest($url, array $data, $headers = [])
 	{
         // json序列化后的数据
         $requestJson = json_encode($data);
 
         try{
             // 发送请求
-            $response = HttpClient::post(self::BASE_URL . $path, $requestJson, [
-                'Content-Type' => 'application/json;charset=utf-8',
-                'cache-control' => 'no-cache',
-            ]);
+            $response = HttpClient::post($url, json_encode($data, JSON_UNESCAPED_UNICODE), $headers);
             // 请求失败
             if (!$response->ok()) {
                 return [null, new \Exception($response->error, 400)];
