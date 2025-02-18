@@ -39,6 +39,8 @@ class Tencent extends Platform
     protected $options = [
         // 推广域名
         'domain_name' => '',
+        // 页面地址
+        'page_url' => '',
         // 转化类型
         'action_type' => '',
         // 深度转化类型
@@ -125,8 +127,17 @@ class Tencent extends Platform
                 ]
             ];
         }
-        // 发送请求并返回结果
-        return $this->sendRequest($requestUrl, $body, $headers);
+        // 获取请求结果
+        $sendRequestResult = $this->sendRequest($requestUrl, $body, $headers);
+        // 如果请求失败且错误代码为51000
+        if(is_null($sendRequestResult[0]) && $sendRequestResult[1]->getCode() == 51000){
+            // 更换参数
+            $body['actions'][0]['url'] = $this->options['page_url'];
+            // 返回请求结果
+            return $this->sendRequest($requestUrl, $body, $headers);
+        }
+        // 返回结果
+        return $sendRequestResult;
 	}
 
     /**
@@ -199,8 +210,17 @@ class Tencent extends Platform
                 ]
             ];
         }
-        // 发送请求并返回结果
-        return $this->sendRequest($requestUrl, $body, $headers);
+        // 获取请求结果
+        $sendRequestResult = $this->sendRequest($requestUrl, $body, $headers);
+        // 如果请求失败且错误代码为51000
+        if(is_null($sendRequestResult[0]) && $sendRequestResult[1]->getCode() == 51000){
+            // 更换参数
+            $body['actions'][0]['url'] = $this->options['page_url'];
+            // 返回请求结果
+            return $this->sendRequest($requestUrl, $body, $headers);
+        }
+        // 返回结果
+        return $sendRequestResult;
 	}
 
     /**
@@ -229,7 +249,7 @@ class Tencent extends Platform
             // 版权资质未指定转化类型
             if(strpos($result['message'], 'unknown action') !== false){
                 // 返回失败
-                return [null, new \Exception('操作失败, 错误信息: 版权资质广点通转化类型设置错误或账户域名不正确, ' . $result['message'] . ', 错误代码: ' . $result['code'], 400)];
+                return [null, new \Exception('操作失败, 错误信息: 版权资质广点通转化类型设置错误或账户域名不正确, ' . $result['message'] . ', 错误代码: ' . $result['code'], $result['code'])];
             }
             // 返回失败
             return [null, new \Exception('操作失败, 错误信息: ' . $result['message'], 400)];
