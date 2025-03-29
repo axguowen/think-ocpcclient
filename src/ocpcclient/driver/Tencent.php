@@ -30,7 +30,7 @@ class Tencent extends Platform
      * 新版基础URL
      * @const
      */
-    const BASE_URL_NEW = 'https://api.e.qq.com/v1.3';
+    const BASE_URL_NEW = 'https://api.e.qq.com/v3.0';
 
 	/**
      * 平台配置参数
