@@ -15,7 +15,7 @@
     ],
     "require": {
         "topthink/framework": "^6.1||^8.0",
-        "axguowen/http-client": "^1.0"
+        "axguowen/http-client": "^1.0||dev-master"
     },
     "autoload": {
         "psr-4": {
