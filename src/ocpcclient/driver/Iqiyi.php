@@ -32,7 +32,7 @@ class Iqiyi extends Platform
      */
     protected $options = [
         // 事件类型
-        'event_type' => 16,
+        'event_type' => 0,
         // 深度转化类型
         'deep_type' => 0,
         // 广告ID
@@ -46,6 +46,10 @@ class Iqiyi extends Platform
      */
 	public function convertGenerally()
 	{
+        // 事件类型错误
+        if(empty($this->options['event_type'])){
+            return [null, new \Exception('事件类型参数错误', 400)];
+        }
         // 广告ID参数错误
         if(empty($this->options['impress_id'])){
             return [null, new \Exception('未指定参数impress_id', 400)];
@@ -70,6 +74,10 @@ class Iqiyi extends Platform
      */
 	public function convertDeeply()
 	{
+        // 事件类型错误
+        if(empty($this->options['event_type'])){
+            return [null, new \Exception('事件类型参数错误', 400)];
+        }
         // 广告ID参数错误
         if(empty($this->options['impress_id'])){
             return [null, new \Exception('未指定参数impress_id', 400)];
