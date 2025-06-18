@@ -17,6 +17,7 @@ use axguowen\HttpClient;
 /**
  * 巨量引擎
  * @document https://event-manager.oceanengine.com/docs/8650/app_api_docs/
+ * @document https://bytedance.feishu.cn/docx/ZrzEd4n2SoNJRwxFu0VcGUxxnle
  */
 class OceanEngine extends Platform
 {

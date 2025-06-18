@@ -281,6 +281,11 @@ class Baidu extends Platform
             if($result['header']['status'] == 0){
                 return ['操作成功', null];
             }
+            // 如果错误信息是failure
+            if($result['header']['desc'] == 'failure'){
+                // 返回数据超时
+                return [null, new \Exception('回传失败, 数据可能已超时', 400)];
+            }
             // 返回失败
             return [null, new \Exception('操作失败, 错误信息: ' . $result['header']['desc'], 400)];
         }
