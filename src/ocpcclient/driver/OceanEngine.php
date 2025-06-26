@@ -38,6 +38,10 @@ class OceanEngine extends Platform
         'callback' => '',
         // 转化时间戳, 单位秒
         'timestamp' => '',
+        // 授权access_token
+        'app_access_token' => '',
+        // 其它属性
+        'properties' => [],
     ];
 
 	/**
@@ -78,18 +82,7 @@ class OceanEngine extends Platform
         // 如果是APP内下单
         if($this->options['event_type'] == 'in_app_order'){
             // 追加属性
-            $requestData['properties'] = [
-                'order_cnt' => 1,
-                'pay_amount' => 10000,
-                'product_id' => '1001',
-                'sku_id' => '100101',
-                'order_amount' => 100,
-                'product_name' => '产品',
-                'order_id' => $this->options['timestamp'],
-                'tec_agent' => '鼎尖网络',
-                'shop_name' => '鼎尖网络',
-                'ecom_platform' => '巨量引擎',
-            ];
+            $requestData['properties'] = $this->options['properties'];
         }
 
         // 发送请求并返回结果
@@ -107,13 +100,19 @@ class OceanEngine extends Platform
 	{
         // json序列化后的数据
         $requestJson = json_encode($data);
+        // 请求头
+        $requestHeader = [
+            'Content-Type' => 'application/json;charset=utf-8',
+            'Content-Length' => strlen($requestJson)
+        ];
+        // 如果有授权token
+        if(!empty($this->options['app_access_token'])){
+            $requestHeader['App-Access-Token'] = $this->options['app_access_token'];
+        }
 
         try{
             // 发送请求
-            $response = HttpClient::post(self::BASE_URL . $path, $requestJson, [
-                'Content-Type' => 'application/json;charset=utf-8',
-                'Content-Length' => strlen($requestJson)
-            ]);
+            $response = HttpClient::post(self::BASE_URL . $path, $requestJson, $requestHeader);
             // 请求失败
             if (!$response->ok()) {
                 return [null, new \Exception($response->error, 400)];
