@@ -40,6 +40,8 @@ class OceanEngine extends Platform
         'timestamp' => '',
         // 授权access_token
         'app_access_token' => '',
+        // 上下文扩展属性
+        'context_extends' => [],
         // 其它属性
         'properties' => [],
     ];
@@ -78,6 +80,12 @@ class OceanEngine extends Platform
             ],
             'timestamp' => $this->options['timestamp'] * 1000,
         ];
+
+        // 遍历上下文扩展属性
+        foreach($this->options['context_extends'] as $key => $value){
+            // 追加属性
+            $requestData['context'][$key] = $value;
+        }
 
         // 如果是APP内下单
         if($this->options['event_type'] == 'in_app_order'){
