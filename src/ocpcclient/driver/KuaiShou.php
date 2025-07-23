@@ -39,6 +39,8 @@ class KuaiShou extends Platform
         'callback' => '',
         // 转化时间戳, 单位秒
         'event_time' => '',
+        // 事件属性
+        'event_props' => [],
     ];
 
 	/**
@@ -72,6 +74,15 @@ class KuaiShou extends Platform
             // 转化时间
             'event_time' => $this->options['event_time'] * 1000,
         ];
+        // 如果设置了事件属性
+        if(!empty($this->options['event_props'])){
+            // 添加事件属性
+            $requestData['event_props'] = $this->options['event_props'];
+            // 如果不是字符串类型
+            if(!is_string($requestData['event_props'])){
+                $requestData['event_props'] = json_encode($requestData['event_props'], JSON_UNESCAPED_UNICODE);
+            }
+        }
 
         // 发送请求并返回结果
         return $this->sendRequest($requestData);
@@ -108,6 +119,15 @@ class KuaiShou extends Platform
             // 转化时间
             'event_time' => $this->options['event_time'] * 1000,
         ];
+        // 如果设置了事件属性
+        if(!empty($this->options['event_props'])){
+            /// 添加事件属性
+            $requestData['event_props'] = $this->options['event_props'];
+            // 如果不是字符串类型
+            if(!is_string($requestData['event_props'])){
+                $requestData['event_props'] = json_encode($requestData['event_props'], JSON_UNESCAPED_UNICODE);
+            }
+        }
 
         // 发送请求并返回结果
         return $this->sendRequest($requestData);
