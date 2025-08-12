@@ -34,6 +34,8 @@ class OceanEngine extends Platform
     protected $options = [
         // 事件类型
         'event_type' => '',
+        // 深度事件类型
+        'deep_type' => '',
         // 回调参数
         'callback' => '',
         // 转化时间戳, 单位秒
@@ -96,6 +98,57 @@ class OceanEngine extends Platform
         // 发送请求并返回结果
         return $this->sendRequest($requestData, '/conversion');
 	}
+
+    /**
+     * 深度转化回传
+     * @access public
+     * @return array
+     */
+	public function convertDeeply()
+	{
+        // 如果事件类型为空
+        if(empty($this->options['event_type'])){
+            return [null, new \Exception('版权资质未指定巨量引擎转化事件类型', 400)];
+        }
+
+        // 转化回调参数错误
+        if(empty($this->options['callback'])){
+            return [null, new \Exception('未指定参数callback', 400)];
+        }
+
+        // 未设置转化时间
+        if(empty($this->options['timestamp'])){
+            return [null, new \Exception('未指定转化时间', 400)];
+        }
+
+        // 转化数据
+        $requestData = [
+            // 事件类型
+            'event_type' => $this->options['deep_type'],
+            // 转化上下文数据
+            'context' => [
+                'ad' => [
+                    'callback' => explode('#', $this->options['callback'])[0]
+                ]
+            ],
+            'timestamp' => $this->options['timestamp'] * 1000,
+        ];
+
+        // 遍历上下文扩展属性
+        foreach($this->options['context_extends'] as $key => $value){
+            // 追加属性
+            $requestData['context'][$key] = $value;
+        }
+
+        // 如果是APP内下单
+        if($this->options['event_type'] == 'in_app_order'){
+            // 追加属性
+            $requestData['properties'] = $this->options['properties'];
+        }
+
+        // 发送请求并返回结果
+        return $this->sendRequest($requestData, '/conversion');
+    }
 
     /**
      * 发送请求
