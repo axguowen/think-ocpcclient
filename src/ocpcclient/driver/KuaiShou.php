@@ -33,14 +33,16 @@ class KuaiShou extends Platform
     protected $options = [
         // 事件类型
         'event_type' => '',
+        // 事件行为
+        'event_action' => '',
         // 深度转化类型
         'deep_type' => '',
+        // 深度转化行为
+        'deep_action' => '',
         // 广告ID
         'callback' => '',
         // 转化时间戳, 单位秒
         'event_time' => '',
-        // 事件属性
-        'event_props' => [],
     ];
 
 	/**
@@ -74,14 +76,20 @@ class KuaiShou extends Platform
             // 转化时间
             'event_time' => $this->options['event_time'] * 1000,
         ];
-        // 如果设置了事件属性
-        if(!empty($this->options['event_props'])){
-            // 添加事件属性
-            $requestData['event_props'] = $this->options['event_props'];
-            // 如果不是字符串类型
-            if(!is_string($requestData['event_props'])){
-                $requestData['event_props'] = json_encode($requestData['event_props'], JSON_UNESCAPED_UNICODE);
+        // 如果是有效获客
+        if($requestData['event_type'] == 251){
+            // 事件行为
+            $actionName = $this->options['event_action'];
+            // 如果为空
+            if(empty($actionName)){
+                // 默认微信加粉
+                $actionName = 'EVENT_EFFECTIVE_CUSTOMER_ACQUISITION_CATEGORY8';
             }
+            // 添加事件属性
+            $requestData['event_props'] = json_encode([
+                // 行为名称
+                'actionName' => $actionName,
+            ], JSON_UNESCAPED_UNICODE);
         }
 
         // 发送请求并返回结果
@@ -119,14 +127,20 @@ class KuaiShou extends Platform
             // 转化时间
             'event_time' => $this->options['event_time'] * 1000,
         ];
-        // 如果设置了事件属性
-        if(!empty($this->options['event_props'])){
-            /// 添加事件属性
-            $requestData['event_props'] = $this->options['event_props'];
-            // 如果不是字符串类型
-            if(!is_string($requestData['event_props'])){
-                $requestData['event_props'] = json_encode($requestData['event_props'], JSON_UNESCAPED_UNICODE);
+        // 如果是有效获客
+        if($requestData['event_type'] == 251){
+            // 事件行为
+            $actionName = $this->options['deep_action'];
+            // 如果为空
+            if(empty($actionName)){
+                // 默认微信加粉
+                $actionName = 'EVENT_EFFECTIVE_CUSTOMER_ACQUISITION_CATEGORY8';
             }
+            // 添加事件属性
+            $requestData['event_props'] = json_encode([
+                // 行为名称
+                'actionName' => $actionName,
+            ], JSON_UNESCAPED_UNICODE);
         }
 
         // 发送请求并返回结果
