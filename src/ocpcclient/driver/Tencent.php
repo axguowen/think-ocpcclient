@@ -17,6 +17,7 @@ use axguowen\HttpClient;
 /**
  * 腾讯广点通
  * @document https://imgcache.qq.com/qzone/biz/gdt/tracking/conversion_web/h5_api_doc.pdf
+ * @link https://datanexus.qq.com/doc/develop/guider/interface/conversion/trackingcgi_api_web
  */
 class Tencent extends Platform
 {
