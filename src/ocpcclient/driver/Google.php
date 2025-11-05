@@ -46,7 +46,7 @@ class Google extends Platform
         // 转化时间需要带时区
         'conversion_date_time' => '',
         // 转化的价值
-        'conversion_value' => 99.99,
+        'conversion_value' => 20,
         // 币种代码
         'currency_code' => 'USD',
         // IP地址
@@ -78,8 +78,8 @@ class Google extends Platform
         $conversionValue = $this->options['conversion_value'];
         // 如果为空
         if(empty($conversionValue)){
-            // 设置为99.99
-            $conversionValue = 99.99;
+            // 设置为20
+            $conversionValue = 20;
         }
         // 转化时间
         $conversionDateTime = $this->options['conversion_date_time'];
