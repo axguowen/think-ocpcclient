@@ -41,6 +41,8 @@ class Google extends Platform
         'customer_id' => '',
         // 转化操作ID
         'conversion_action_id' => '',
+        // 深度转化操作ID
+        'deep_action_id' => '',
         // 广告追踪参数
         'gclid' => '',
         // 转化时间需要带时区
@@ -58,8 +60,8 @@ class Google extends Platform
      * @access public
      * @return array
      */
-	public function convertGenerally()
-	{
+    public function convertGenerally()
+    {
         if(empty($this->options['customer_id'])){
             return [null, new \Exception('未填写谷歌账户ID')];
         }
@@ -131,5 +133,85 @@ class Google extends Platform
             // 返回
             return [null, new \Exception($apiException->getBasicMessage())];
         }
-	}
+    }
+
+    /**
+     * 深度回传
+     * @access public
+     * @return array
+     */
+    public function convertDeeply()
+    {
+        if(empty($this->options['customer_id'])){
+            return [null, new \Exception('未填写谷歌账户ID')];
+        }
+        if(empty($this->options['deep_action_id'])){
+            return [null, new \Exception('未填写深度转化操作ID参数')];
+        }
+        // 获取开发者令牌
+        $developerToken = $this->options['developer_token'];
+        // 获取jsonKey路径
+        $jsonKeyFilePath = \think\facade\App::getRootPath() . ltrim($this->options['json_key_file_path'], DIRECTORY_SEPARATOR);
+        // 当前客户ID
+        $customerId = str_replace('-', '', $this->options['customer_id']);
+        // 转化操作ID
+        $conversionActionId = $this->options['deep_action_id'];
+        // 转化价值
+        $conversionValue = $this->options['conversion_value'];
+        // 如果为空
+        if(empty($conversionValue)){
+            // 设置为20
+            $conversionValue = 20;
+        }
+        // 转化时间
+        $conversionDateTime = $this->options['conversion_date_time'];
+        // 币种
+        $currencyCode = $this->options['currency_code'];
+        // 构造授权实例
+        $oAuth2Credential = (new OAuth2TokenBuilder())
+                            ->withJsonKeyFilePath($jsonKeyFilePath)
+                            ->withScopes('https://www.googleapis.com/auth/adwords')
+                            ->build();
+
+        // 构造客户端实例
+        $googleAdsClient = (new GoogleAdsClientBuilder())
+                            ->withDeveloperToken($developerToken)
+                            ->withLoginCustomerId($customerId)
+                            ->withOAuth2Credential($oAuth2Credential)
+                            ->build();
+        
+        // 实例化转化
+        $clickConversion = new ClickConversion([
+            'conversion_action' => ResourceNames::forConversionAction($customerId, $conversionActionId),
+            'conversion_value' => $conversionValue,
+            'conversion_date_time' => $conversionDateTime,
+            'currency_code' => $currencyCode,
+        ]);
+        // 设置广告追踪ID
+        $clickConversion->setGclid($this->options['gclid']);
+        // 设置consent
+        $clickConversion->setConsent(new Consent(['ad_user_data' => 2]));
+        
+        try {
+            // 获取上传转化请求客户端
+            $conversionUploadServiceClient = $googleAdsClient->getConversionUploadServiceClient();
+            // 发出请求以上传点击转化数据
+            $response = $conversionUploadServiceClient->uploadClickConversions(
+                // 上传点击转化数据 应始终将部分失败设置为true
+                UploadClickConversionsRequest::build($customerId, [$clickConversion], true)
+            );
+            // 如果失败
+            if ($response->hasPartialFailureError()) {
+                // 返回
+                return [null, new \Exception($response->getPartialFailureError()->getMessage())];
+            }
+            // 获取响应结果
+            $uploadedClickConversion = $response->getResults()[0];
+            // 返回
+            return [$uploadedClickConversion, null];
+        } catch (ApiException $apiException) {
+            // 返回
+            return [null, new \Exception($apiException->getBasicMessage())];
+        }
+    }
 }
