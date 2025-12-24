@@ -78,11 +78,6 @@ class Google extends Platform
         $conversionActionId = $this->options['conversion_action_id'];
         // 转化价值
         $conversionValue = $this->options['conversion_value'];
-        // 如果为空
-        if(empty($conversionValue)){
-            // 设置为20
-            $conversionValue = 20;
-        }
         // 转化时间
         $conversionDateTime = $this->options['conversion_date_time'];
         // 币种
@@ -100,13 +95,18 @@ class Google extends Platform
                             ->withOAuth2Credential($oAuth2Credential)
                             ->build();
         
-        // 实例化转化
-        $clickConversion = new ClickConversion([
+        // 参数
+        $conversionOptions = [
             'conversion_action' => ResourceNames::forConversionAction($customerId, $conversionActionId),
-            'conversion_value' => $conversionValue,
             'conversion_date_time' => $conversionDateTime,
             'currency_code' => $currencyCode,
-        ]);
+        ];
+        // 如果设置了转化价值
+        if(!empty($conversionValue)){
+            $conversionOptions['conversion_value'] = $conversionValue;
+        }
+        // 实例化转化
+        $clickConversion = new ClickConversion($conversionOptions);
         // 设置广告追踪ID
         $clickConversion->setGclid($this->options['gclid']);
         // 设置consent
@@ -158,11 +158,6 @@ class Google extends Platform
         $conversionActionId = $this->options['deep_action_id'];
         // 转化价值
         $conversionValue = $this->options['conversion_value'];
-        // 如果为空
-        if(empty($conversionValue)){
-            // 设置为20
-            $conversionValue = 20;
-        }
         // 转化时间
         $conversionDateTime = $this->options['conversion_date_time'];
         // 币种
@@ -180,13 +175,18 @@ class Google extends Platform
                             ->withOAuth2Credential($oAuth2Credential)
                             ->build();
         
-        // 实例化转化
-        $clickConversion = new ClickConversion([
+        // 参数
+        $conversionOptions = [
             'conversion_action' => ResourceNames::forConversionAction($customerId, $conversionActionId),
-            'conversion_value' => $conversionValue,
             'conversion_date_time' => $conversionDateTime,
             'currency_code' => $currencyCode,
-        ]);
+        ];
+        // 如果设置了转化价值
+        if(!empty($conversionValue)){
+            $conversionOptions['conversion_value'] = $conversionValue;
+        }
+        // 实例化转化
+        $clickConversion = new ClickConversion($conversionOptions);
         // 设置广告追踪ID
         $clickConversion->setGclid($this->options['gclid']);
         // 设置consent
