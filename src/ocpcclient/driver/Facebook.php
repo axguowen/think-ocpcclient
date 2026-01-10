@@ -63,12 +63,6 @@ class Facebook extends Platform
         if(empty($this->options['access_token'])){
             return [null, new \Exception('未填写Facebook访问令牌')];
         }
-        if(empty($this->options['app_id'])){
-            return [null, new \Exception('未填写Facebook应用ID')];
-        }
-        if(empty($this->options['app_secret'])){
-            return [null, new \Exception('未填写Facebook应用密钥')];
-        }
         if(empty($this->options['pixel_id'])){
             return [null, new \Exception('未填写Facebook像素ID')];
         }
@@ -80,7 +74,15 @@ class Facebook extends Platform
         }
         $accessToken = $this->options['access_token'];
         $appId = $this->options['app_id'];
+        // 如果为空
+        if(empty($appId)){
+            $appId = null;
+        }
         $appSecret = $this->options['app_secret'];
+        // 如果为空
+        if(empty($appSecret)){
+            $appSecret = null;
+        }
         $pixelId = $this->options['pixel_id'];
         $clientIpAddress = $this->options['client_ip_address'];
         $eventName = $this->options['event_name'];
@@ -154,12 +156,6 @@ class Facebook extends Platform
         if(empty($this->options['access_token'])){
             return [null, new \Exception('未填写Facebook访问令牌')];
         }
-        if(empty($this->options['app_id'])){
-            return [null, new \Exception('未填写Facebook应用ID')];
-        }
-        if(empty($this->options['app_secret'])){
-            return [null, new \Exception('未填写Facebook应用密钥')];
-        }
         if(empty($this->options['pixel_id'])){
             return [null, new \Exception('未填写Facebook像素ID')];
         }
@@ -171,7 +167,15 @@ class Facebook extends Platform
         }
         $accessToken = $this->options['access_token'];
         $appId = $this->options['app_id'];
+        // 如果为空
+        if(empty($appId)){
+            $appId = null;
+        }
         $appSecret = $this->options['app_secret'];
+        // 如果为空
+        if(empty($appSecret)){
+            $appSecret = null;
+        }
         $pixelId = $this->options['pixel_id'];
         $clientIpAddress = $this->options['client_ip_address'];
         $eventName = $this->options['event_deep'];
