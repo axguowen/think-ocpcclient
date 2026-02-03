@@ -45,6 +45,10 @@ class Google extends Platform
         'deep_action_id' => '',
         // 广告追踪参数
         'gclid' => '',
+        // gbraid参数
+        'gbraid' => '',
+        // wbraid参数
+        'wbraid' => '',
         // 转化时间需要带时区
         'conversion_date_time' => '',
         // 转化的价值
@@ -107,8 +111,21 @@ class Google extends Platform
         }
         // 实例化转化
         $clickConversion = new ClickConversion($conversionOptions);
-        // 设置广告追踪ID
-        $clickConversion->setGclid($this->options['gclid']);
+        // 如果gclid不为空
+        if(!empty($this->options['gclid'])){
+            // 设置广告追踪ID
+            $clickConversion->setGclid($this->options['gclid']);
+        }
+        // 如果wbraid不为空
+        elseif(!empty($this->options['wbraid'])){
+            // 设置广告追踪ID
+            $clickConversion->setWbraid($this->options['wbraid']);
+        }
+        // 如果gbraid不为空
+        elseif(!empty($this->options['gbraid'])){
+            // 设置广告追踪ID
+            $clickConversion->setGbraid($this->options['gbraid']);
+        }
         // 设置consent
         $clickConversion->setConsent(new Consent(['ad_user_data' => 2]));
         
