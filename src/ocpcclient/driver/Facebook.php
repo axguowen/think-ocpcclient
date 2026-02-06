@@ -83,7 +83,7 @@ class Facebook extends Platform
         if(empty($appSecret)){
             $appSecret = null;
         }
-        $pixelId = $this->options['pixel_id'];
+        $pixelId = trim($this->options['pixel_id']);
         $clientIpAddress = $this->options['client_ip_address'];
         $eventName = $this->options['event_name'];
         $eventTime = $this->options['event_time'];
@@ -120,17 +120,17 @@ class Facebook extends Platform
             ];
         }
 
-        // 初始化
-        $api = Api::init($appId, $appSecret, $accessToken);
-        // 初始字段
-        $fields = [];
-        // 构造参数
-        $params = [
-            'data' => [$postData],
-        ];
-        // 实例化像素
-        $adsPixel = new AdsPixel($pixelId);
         try {
+            // 初始化
+            $api = Api::init($appId, $appSecret, $accessToken);
+            // 初始字段
+            $fields = [];
+            // 构造参数
+            $params = [
+                'data' => [$postData],
+            ];
+            // 实例化像素
+            $adsPixel = new AdsPixel($pixelId);
             // 获取响应
             $response = $adsPixel->createEvent($fields, $params)->exportAllData();
             // 如果成功
@@ -176,7 +176,7 @@ class Facebook extends Platform
         if(empty($appSecret)){
             $appSecret = null;
         }
-        $pixelId = $this->options['pixel_id'];
+        $pixelId = trim($this->options['pixel_id']);
         $clientIpAddress = $this->options['client_ip_address'];
         $eventName = $this->options['event_deep'];
         $eventTime = $this->options['event_time'];
@@ -213,17 +213,17 @@ class Facebook extends Platform
             ];
         }
 
-        // 初始化
-        $api = Api::init($appId, $appSecret, $accessToken);
-        // 初始字段
-        $fields = [];
-        // 构造参数
-        $params = [
-            'data' => [$postData],
-        ];
-        // 实例化像素
-        $adsPixel = new AdsPixel($pixelId);
         try {
+            // 初始化
+            $api = Api::init($appId, $appSecret, $accessToken);
+            // 初始字段
+            $fields = [];
+            // 构造参数
+            $params = [
+                'data' => [$postData],
+            ];
+            // 实例化像素
+            $adsPixel = new AdsPixel($pixelId);
             // 获取响应
             $response = $adsPixel->createEvent($fields, $params)->exportAllData();
             // 如果成功
