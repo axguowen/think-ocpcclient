@@ -45,6 +45,8 @@ class Vivo extends Platform
         'request_id' => '',
         // 转化追踪参数
         'creative_id' => '',
+        // 广告主ID
+        'advertiser_id' => '',
     ];
 
 	/**
@@ -104,11 +106,17 @@ class Vivo extends Platform
 	{
         // json序列化后的数据
         $requestJson = json_encode($data);
-        $requestQuery = http_build_query([
+        // query参数
+        $queryData = [
             'access_token' => $this->options['access_token'],
-			'timestamp' => time() * 1000,
-			'nonce' => hash('md5', time() . '_' . mt_rand(100000,999999)),
-        ]);
+            'timestamp' => time() * 1000,
+            'nonce' => hash('md5', time() . '_' . mt_rand(100000,999999)),
+        ];
+        // 如果存在广告主ID
+        if(!empty($this->options['advertiser_id'])){
+            $queryData['advertiser_id'] = $this->options['advertiser_id'];
+        }
+        $requestQuery = http_build_query($queryData);
 
         try{
             // 发送请求
