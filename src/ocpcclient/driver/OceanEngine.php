@@ -94,6 +94,10 @@ class OceanEngine extends Platform
             // 追加属性
             $requestData['properties'] = $this->options['properties'];
         }
+        elseif($this->options['event_type'] == 'in_app_order_old'){
+            // 通过老接口发送请求
+            return $this->sendRequestOld($requestData);
+        }
 
         // 发送请求并返回结果
         return $this->sendRequest($requestData, '/conversion');
@@ -198,4 +202,52 @@ class OceanEngine extends Platform
         }
     }
 
+    /**
+     * 发送请求-老接口发送
+     * @access protected
+     * @param array $data 转化数据
+     * @param string $path URL
+     * @return array
+     */
+	protected function sendRequestOld(array $data, $path = '')
+	{
+        $requestData = [
+            'callback' => urlencode($this->options['callback']),
+            'conv_time' => $this->options['timestamp'],
+            'event_type' => 2,
+        ];
+        // 构建query数据
+        $requestQuery = http_build_query($requestData);
+
+        try{
+            // 发送请求
+            $response = HttpClient::get('https://ad.oceanengine.com/track/activate/?' . $requestQuery);
+            // 请求失败
+            if (!$response->ok()) {
+                return [null, new \Exception($response->error, 400)];
+            }
+            // 如果返回空
+            if(is_null($response->body)){
+                // 返回失败
+                return [null, new \Exception('操作失败, 未返回结果', 400)];
+            }
+            // 获取请求结果
+            $result = is_null($response->body) ? [] : $response->json();
+            // 如果回传成功
+            if($result['code'] == 0){
+                return ['操作成功', null];
+            }
+            // 返回失败
+            return [null, new \Exception('操作失败, 错误信息: ' . $result['msg'], 400)];
+        }
+        // 异常捕获
+        catch (\Exception $e) {
+            // 如果开启调试模式
+            if(\think\facade\App::isDebug()){
+                // 手动抛出异常
+                throw $e;
+            }
+            return [null, $e];
+        }
+    }
 }
