@@ -214,7 +214,7 @@ class OceanEngine extends Platform
         $requestData = [
             'callback' => urlencode($this->options['callback']),
             'conv_time' => $this->options['timestamp'],
-            'event_type' => 2,
+            'event_type' => 20,
         ];
         // 构建query数据
         $requestQuery = http_build_query($requestData);
