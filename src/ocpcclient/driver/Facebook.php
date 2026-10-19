@@ -35,6 +35,8 @@ class Facebook extends Platform
         'app_secret' => '',
         // 像素ID
         'pixel_id' => '',
+        // 点击ID
+        'fbclid' => '',
         // 事件名称
         'event_name' => '',
         // 深度转化事件名称
@@ -51,6 +53,8 @@ class Facebook extends Platform
         'currency_code' => 'USD',
         // IP地址
         'client_ip_address' => '',
+        // User-Agent
+        'client_user_agent' => '',
     ];
 
 	/**
@@ -84,7 +88,9 @@ class Facebook extends Platform
             $appSecret = null;
         }
         $pixelId = trim($this->options['pixel_id']);
+        $fbclid = $this->options['fbclid'];
         $clientIpAddress = $this->options['client_ip_address'];
+        $clientUserAgent = $this->options['client_user_agent'];
         $eventName = $this->options['event_name'];
         $eventTime = $this->options['event_time'];
         // 如果为空
@@ -101,15 +107,23 @@ class Facebook extends Platform
         if(empty($actionSource)){
             $actionSource = 'website';
         }
+        // 客户信息参数
+        $userData = [
+            'client_ip_address' => $clientIpAddress,
+            'client_user_agent' => $clientUserAgent,
+        ];
+        // 如果fbclid不为空且不是TEST开头
+        if(!empty($fbclid) && strpos($fbclid, 'TEST') !== 0){
+            $creationTime = $eventTime * 1000;
+            $userData['fbc'] = 'fb.1.' . $creationTime . '.' . $fbclid;
+        }
         // 构造回传数据
         $postData = [
             'event_name' => $eventName,
             'event_time' => $eventTime,
             'event_source_url' => $this->options['event_source_url'],
-            'action_source' => $this->options['action_source'],
-            'user_data' => [
-                'client_ip_address' => $clientIpAddress,
-            ],
+            'action_source' => $actionSource,
+            'user_data' => $userData,
         ];
         // 如果设置了价值
         if(!empty($this->options['conversion_value'])){
@@ -129,6 +143,11 @@ class Facebook extends Platform
             $params = [
                 'data' => [$postData],
             ];
+            // 如果fbclid是TEST开头
+            if(strpos($fbclid, 'TEST') === 0){
+                // 设置验证事件代码
+                $params['test_event_code'] = $fbclid;
+            }
             // 实例化像素
             $adsPixel = new AdsPixel($pixelId);
             // 获取响应
@@ -177,7 +196,9 @@ class Facebook extends Platform
             $appSecret = null;
         }
         $pixelId = trim($this->options['pixel_id']);
+        $fbclid = $this->options['fbclid'];
         $clientIpAddress = $this->options['client_ip_address'];
+        $clientUserAgent = $this->options['client_user_agent'];
         $eventName = $this->options['event_deep'];
         $eventTime = $this->options['event_time'];
         // 如果为空
@@ -194,15 +215,23 @@ class Facebook extends Platform
         if(empty($actionSource)){
             $actionSource = 'website';
         }
+        // 客户信息参数
+        $userData = [
+            'client_ip_address' => $clientIpAddress,
+            'client_user_agent' => $clientUserAgent,
+        ];
+        // 如果fbclid不为空且不是TEST开头
+        if(!empty($fbclid) && strpos($fbclid, 'TEST') !== 0){
+            $creationTime = $eventTime * 1000;
+            $userData['fbc'] = 'fb.1.' . $creationTime . '.' . $fbclid;
+        }
         // 构造回传数据
         $postData = [
             'event_name' => $eventName,
             'event_time' => $eventTime,
             'event_source_url' => $this->options['event_source_url'],
-            'action_source' => $this->options['action_source'],
-            'user_data' => [
-                'client_ip_address' => $clientIpAddress,
-            ],
+            'action_source' => $actionSource,
+            'user_data' => $userData,
         ];
         // 如果设置了价值
         if(!empty($this->options['conversion_value'])){
@@ -222,6 +251,11 @@ class Facebook extends Platform
             $params = [
                 'data' => [$postData],
             ];
+            // 如果fbclid是TEST开头
+            if(strpos($fbclid, 'TEST') === 0){
+                // 设置验证事件代码
+                $params['test_event_code'] = $fbclid;
+            }
             // 实例化像素
             $adsPixel = new AdsPixel($pixelId);
             // 获取响应
