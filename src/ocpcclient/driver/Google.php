@@ -12,19 +12,20 @@
 namespace think\ocpcclient\driver;
 
 use think\ocpcclient\Platform;
-use Google\Ads\GoogleAds\Lib\V22\GoogleAdsClientBuilder;
-use Google\Ads\GoogleAds\Lib\V22\GoogleAdsException;
+use Google\Ads\GoogleAds\Lib\V26\GoogleAdsClientBuilder;
+use Google\Ads\GoogleAds\Lib\V26\GoogleAdsException;
 use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
-use Google\Ads\GoogleAds\V22\Common\Consent;
-use Google\Ads\GoogleAds\V22\Services\ClickConversion;
-use Google\Ads\GoogleAds\V22\Services\UploadClickConversionsRequest;
-use Google\Ads\GoogleAds\V22\Services\UploadClickConversionsResponse;
-use Google\Ads\GoogleAds\Util\V22\ResourceNames;
+use Google\Ads\GoogleAds\V26\Common\Consent;
+use Google\Ads\GoogleAds\V26\Services\ClickConversion;
+use Google\Ads\GoogleAds\V26\Services\UploadClickConversionsRequest;
+use Google\Ads\GoogleAds\V26\Services\UploadClickConversionsResponse;
+use Google\Ads\GoogleAds\Util\V26\ResourceNames;
 use Google\ApiCore\ApiException;
 
 /**
  * 谷歌推广
  * @document https://developers.google.cn/google-ads/api/docs/get-started/make-first-call?hl=zh-cn
+ * @link https://developers.google.cn/data-manager/api/devguides?hl=zh-cn
  */
 class Google extends Platform
 {
